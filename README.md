@@ -13,6 +13,7 @@ to begin the interactive program.
 There are currently 4 working modes
 
 ----comp----
+
 This mode asks the user to input two teams, and then shows all their stats side-by-side.
 Stats include tournament seed, Kenpon Ranking, Kenpom seed, Record, and all other Kenpom
 Adjusted Efficiency stats.
@@ -25,14 +26,17 @@ to spell, and the program will give the correct spelling for all teams starting 
 that letter (since only a specific spelling for each team is accepted)
 
 ----sim-----
+
 This mode simply sims a game between two give teams, with a simple weighted coin 
 flip based on the caclutaed probability to win
 
 ----bracket----
+
 This mode simulates and prints an entire bracket based on the same algorithm as sim.
 It also compares its simulated bracket to the actual bracket, and prints its accuracy.
 
 ----mass----
+
 This mode takes in a number of touraments to run, and runs that many touraments.
 At the end, the number of tournaments won by each team will be printed.
 
