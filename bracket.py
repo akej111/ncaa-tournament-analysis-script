@@ -214,7 +214,7 @@ def bracket(all_teams, keys, m):
 	r4_winners = []
 	r2_winner = ""
 
-	prediction = ["Round 64",0,"Round of 32",0,"Sweet Sixteen",0,"Elite Eight",0,"Final Four",0,"Championship",0]
+	prediction = ["Round of 32",0,"Sweet 16",0,"Elite Eight",0,"Final Four",0,"Championship Game",0,"Champion",0]
 	nums = [32,0,16,0,8,0,4,0,2,0,1,0]
 	with open('winners.txt', 'r') as file1:
 		all_winners_ordered = file1.readlines()
@@ -223,6 +223,10 @@ def bracket(all_teams, keys, m):
 			r64_winners.append(all_winners_ordered[i])
 		for i in range(32,48):
 			r32_winners.append(all_winners_ordered[i])
+		for i in range(48,56):
+			r16_winners.append(all_winners_ordered[i])
+		for i in range(56,60):
+			r8_winners.append(all_winners_ordered[i])
 
 	with open('pairings.txt', 'r') as file:
 		all_teams_ordered = file.readlines()
@@ -385,6 +389,7 @@ def bracket(all_teams, keys, m):
 	header = header.rjust(len(header)/2 + 25)
 	print header
 	print_sepeartor(25)
+	r16i = 0
 	for i in range(0, len(r16), 2):
 		team1 = r16[i][0]
 		team2 = r16[i][1]
@@ -408,6 +413,12 @@ def bracket(all_teams, keys, m):
 		buff += winner1_dict['Seed']
 		buff += '. '
 		buff += winner1
+		if winner1 == r16_winners[r16i]:
+			buff += " ~~CORRECT~~"
+			prediction[5] += 1
+		else:
+			buff += " ~~WRONG~~"
+		r16i += 1
 		print x1
 		print buff
 		print x2 + '\n'
@@ -433,6 +444,12 @@ def bracket(all_teams, keys, m):
 		buff += winner2_dict['Seed']
 		buff += '. '
 		buff += winner2
+		if winner2 == r16_winners[r16i]:
+			buff += " ~~CORRECT~~"
+			prediction[5] += 1
+		else:
+			buff += " ~~WRONG~~"
+		r16i += 1
 		print x1
 		print buff
 		print x2 + '\n'
@@ -441,6 +458,7 @@ def bracket(all_teams, keys, m):
 	header = header.rjust(len(header)/2 + 25)
 	print header
 	print_sepeartor(25)
+	r8i = 0
 	for i in range(0, len(r8), 2):
 		team1 = r8[i][0]
 		team2 = r8[i][1]
@@ -464,6 +482,12 @@ def bracket(all_teams, keys, m):
 		buff += winner1_dict['Seed']
 		buff += '. '
 		buff += winner1
+		if winner1 == r8_winners[r8i]:
+			buff += " ~~CORRECT~~"
+			prediction[7] += 1
+		else:
+			buff += " ~~WRONG~~"
+		r8i += 1
 		print x1
 		print buff
 		print x2 + '\n'
@@ -489,6 +513,12 @@ def bracket(all_teams, keys, m):
 		buff += winner2_dict['Seed']
 		buff += '. '
 		buff += winner2
+		if winner2 == r8_winners[r8i]:
+			buff += " ~~CORRECT~~"
+			prediction[7] += 1
+		else:
+			buff += " ~~WRONG~~"
+		r8i += 1		
 		print x1
 		print buff
 		print x2 + '\n'
@@ -580,16 +610,27 @@ def bracket(all_teams, keys, m):
 		print buff
 		print x2 + '\n'
 		print "--Final Prediction State --"
-		for i in range(0,12,2):
+		for i in range(0,8,2):
+			print "The predicted",
 			print prediction[i],
-			print "Predicted", 
+			print "field was", 
 			strin = str(prediction[i+1]) + "/" + str(nums[i])
 			doubl = round((float(prediction[i+1])/float(nums[i])) * 100, 2)
 			strin += " correct for "
 			strin += str(doubl)
 			strin += "%"
-			print strin,
-			print "correct"
+			print strin
+		for i in range(8,12,2):
+			print "The predicted",
+			print prediction[i],
+			print "was", 
+			strin = str(prediction[i+1]) + "/" + str(nums[i])
+			doubl = round((float(prediction[i+1])/float(nums[i])) * 100, 2)
+			strin += " correct for "
+			strin += str(doubl)
+			strin += "%"
+			print strin
+
 	if m is 1:
 		input()
 	else:
