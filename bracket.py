@@ -227,6 +227,9 @@ def bracket(all_teams, keys, m):
 			r16_winners.append(all_winners_ordered[i])
 		for i in range(56,60):
 			r8_winners.append(all_winners_ordered[i])
+		for i in range(60,62):
+			r4_winners.append(all_winners_ordered[i])
+		r2_winner = all_winners_ordered[62]	
 
 	with open('pairings.txt', 'r') as file:
 		all_teams_ordered = file.readlines()
@@ -527,6 +530,7 @@ def bracket(all_teams, keys, m):
 	header = header.rjust(len(header)/2 + 25)
 	print header
 	print_sepeartor(25)
+	r4i = 0
 	for i in range(0, len(r4), 2):
 		team1 = r4[i][0]
 		team2 = r4[i][1]
@@ -550,6 +554,12 @@ def bracket(all_teams, keys, m):
 		buff += winner1_dict['Seed']
 		buff += '. '
 		buff += winner1
+		if winner1 == r4_winners[r4i]:
+			buff += " ~~CORRECT~~"
+			prediction[9] += 1
+		else:
+			buff += " ~~WRONG~~"
+		r4i += 1
 		print x1
 		print buff
 		print x2 + '\n'
@@ -575,6 +585,12 @@ def bracket(all_teams, keys, m):
 		buff += winner2_dict['Seed']
 		buff += '. '
 		buff += winner2
+		if winner2 == r4_winners[r4i]:
+			buff += " ~~CORRECT~~"
+			prediction[9] += 1
+		else:
+			buff += " ~~WRONG~~"
+		r4i += 1
 		print x1
 		print buff
 		print x2 + '\n'
@@ -606,6 +622,11 @@ def bracket(all_teams, keys, m):
 		buff += winner1_dict['Seed']
 		buff += '. '
 		buff += winner1
+		if winner1 == r2_winner:
+			buff += " ~~CORRECT~~"
+			prediction[11] += 1
+		else:
+			buff += " ~~WRONG~~"
 		print x1
 		print buff
 		print x2 + '\n'
@@ -672,8 +693,10 @@ with open('team-stats.csv', 'r') as csvfile:
 	for row in reader:
 		all_teams[row["Team"]] = row
 
+
 print "Welcome to Interactive Stats for 2018 March Madness." 
 input()
+
 
 
 
