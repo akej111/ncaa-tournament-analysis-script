@@ -48,9 +48,6 @@ def compare(all_teams, keys):
 			league_av_t = 68.18
 			league_av_pp100 = 105.35
 			possessions = (t1_t * t2_t) / league_av_t
-
-			#t1_ppp = (((t1_o * t2_d)/league_av_pp100) * possessions) / 100.0 
-			#t2_ppp = (((t2_o * t1_d)/league_av_pp100) * possessions) / 100.0
 			
 			t1_ppp = (((t1_o + t2_d)/league_av_pp100) - 1) * possessions
 			t2_ppp = (((t2_o + t1_d)/league_av_pp100) - 1) * possessions
@@ -196,7 +193,47 @@ def sim(matchup):
 	else:
 		return team2	
 
-def bracket(all_teams, keys, m):
+def build_matchup(all_teams, team1, team2):
+	team1_dict = all_teams[team1]
+	team2_dict = all_teams[team2]
+	x1 = team1_dict['Seed']
+	x1 += '. '
+	x1 += team1
+	x1 += '---'
+	x1 = x1.rjust(25)
+	x2 = team2_dict['Seed']
+	x2 += '. '
+	x2 += team2
+	x2 += '---'
+	x2= x2.rjust(25)
+
+	return x1, x2
+
+def build_winner(all_teams, winner):
+	buff = " "
+	buff = buff * 25
+	buff += '|---- '
+	winner_dict = all_teams[winner]
+	buff += winner_dict['Seed']
+	buff += '. '
+	buff += winner
+	return buff
+
+def build_check(buff, winner1, actual_winner, index, pred):
+	if winner1 == actual_winner:
+		buff += " ~~CORRECT~~"
+		pred += 1
+	else:
+		buff += " ~~WRONG~~"
+	return buff, pred
+
+def print_bracket(x1, buff, x2):
+	print x1
+	print buff
+	print x2 + '\n'	
+	
+	
+def bracket(all_teams, keys, m, check):
 	first4 = []
 	first4_w = []
 	r64 = []
@@ -241,6 +278,7 @@ def bracket(all_teams, keys, m):
 	for i in range (0, 4):
 		first4_w.append(sim(first4[i]))
 
+	#Do Play-in
 	playInNum = 0
 	for x in range(8, 72, 2):
 			team1 = all_teams_ordered[x]
@@ -250,282 +288,131 @@ def bracket(all_teams, keys, m):
 				playInNum += 1
 			matchup_t = (team1, team2)
 			r64.append(matchup_t)
+			
+	#Do Round of 64		
 	header = "ROUND OF 64"
 	header = header.rjust(len(header)/2 + 25)
 	print header
 	print_sepeartor(25)
 	r64i = 0;
 	for i in range(0, len(r64), 2):
+		#Do first matchup
 		team1 = r64[i][0]
 		team2 = r64[i][1]
-		team1_dict = all_teams[team1]
-		team2_dict = all_teams[team2]
-		x1 = team1_dict['Seed']
-		x1 += '. '
-		x1 += team1
-		x1 += '---'
-		x1 = x1.rjust(25)
-		x2 = team2_dict['Seed']
-		x2 += '. '
-		x2 += team2
-		x2 += '---'
-		x2= x2.rjust(25)
-		buff = " "
-		buff = buff * 25
-		buff += '|---- '
+		x1, x2 = build_matchup(all_teams, team1, team2)
 		winner1 = sim(r64[i])
-		winner1_dict = all_teams[winner1]
-		buff += winner1_dict['Seed']
-		buff += '. '
-		buff += winner1
-		if winner1 == r64_winners[r64i]:
-			buff += " ~~CORRECT~~"
-			prediction[1] += 1
-		else:
-			buff += " ~~WRONG~~"
-		r64i += 1
-		print x1
-		print buff
-		print x2 + '\n'
+		buff = build_winner(all_teams, winner1)
+		if(check):
+			buff, prediction[1] = build_check(buff, winner1, r64_winners[r64i], prediction[1])
+			r64i += 1
+		print_bracket(x1, buff, x2) 
+
+		#Do Second matchup
 		team1 = r64[i+1][0]
 		team2 = r64[i+1][1]
-		team1_dict = all_teams[team1]
-		team2_dict = all_teams[team2]
-		x1 = team1_dict['Seed']
-		x1 += '. '
-		x1 += team1
-		x1 += '---'
-		x1 = x1.rjust(25)
-		x2 = team2_dict['Seed']
-		x2 += '. '
-		x2 += team2
-		x2 += '---'
-		x2= x2.rjust(25)
-		buff = " "
-		buff = buff * 25
-		buff += '|----'
+		x1, x2 = build_matchup(all_teams, team1, team2)
 		winner2 = sim(r64[i+1])
-		winner2_dict = all_teams[winner2]
-		buff += winner2_dict['Seed']
-		buff += '. '
-		buff += winner2
-		if winner2 == r64_winners[r64i]:
-			buff += " ~~CORRECT~~"
-			prediction[1] += 1
-		else:
-			buff += " ~~WRONG~~"			
-		r64i += 1
-		print x1
-		print buff
-		print x2 + '\n'
+		buff = build_winner(all_teams, winner2)
+		if(check):
+			buff, prediction[1] = build_check(buff, winner2, r64_winners[r64i], prediction[1])
+			r64i += 1
+		print_bracket(x1, buff, x2)
+		
 		r32.append((winner1,winner2))
+	
+	#Do Round of 32
 	header = "ROUND OF 32"
 	header = header.rjust(len(header)/2 + 25)
 	print header
 	print_sepeartor(25)
 	r32i = 0
 	for i in range(0, len(r32), 2):
+		#Do first matchup
 		team1 = r32[i][0]
 		team2 = r32[i][1]
-		team1_dict = all_teams[team1]
-		team2_dict = all_teams[team2]
-		x1 = team1_dict['Seed']
-		x1 += '. '
-		x1 += team1
-		x1 += '---'
-		x1 = x1.rjust(25)
-		x2 = team2_dict['Seed']
-		x2 += '. '
-		x2 += team2
-		x2 += '---'
-		x2= x2.rjust(25)
-		buff = " "
-		buff = buff * 25
-		buff += '|---- '
+		x1, x2 = build_matchup(all_teams, team1, team2)
 		winner1 = sim(r32[i])
-		winner1_dict = all_teams[winner1]
-		buff += winner1_dict['Seed']
-		buff += '. '
-		buff += winner1
-		if winner1 == r32_winners[r32i]:
-			buff += " ~~CORRECT~~"
-			prediction[3] += 1
-		else:
-			buff += " ~~WRONG~~"
-		r32i += 1
-		print x1
-		print buff
-		print x2 + '\n'
+		buff = build_winner(all_teams, winner1)
+		if(check):
+			buff, prediction[3] = build_check(buff, winner1, r32_winners[r32i], prediction[3])
+			r32i += 1
+		print_bracket(x1, buff, x2) 
+
+		#Do Second matchup
 		team1 = r32[i+1][0]
 		team2 = r32[i+1][1]
-		team1_dict = all_teams[team1]
-		team2_dict = all_teams[team2]
-		x1 = team1_dict['Seed']
-		x1 += '. '
-		x1 += team1
-		x1 += '---'
-		x1 = x1.rjust(25)
-		x2 = team2_dict['Seed']
-		x2 += '. '
-		x2 += team2
-		x2 += '---'
-		x2= x2.rjust(25)
-		buff = " "
-		buff = buff * 25
-		buff += '|----'
+		x1, x2 = build_matchup(all_teams, team1, team2)
 		winner2 = sim(r32[i+1])
-		winner2_dict = all_teams[winner2]
-		buff += winner2_dict['Seed']
-		buff += '. '
-		buff += winner2
-		if winner2 == r32_winners[r32i]:
-			buff += " ~~CORRECT~~"
-			prediction[3] += 1
-		else:
-			buff += " ~~WRONG~~"
-		r32i += 1
-		print x1
-		print buff
-		print x2 + '\n'
+		buff = build_winner(all_teams, winner2)
+		if(check):
+			buff, prediction[3] = build_check(buff, winner1, r32_winners[r32i], prediction[3])
+			r32i += 1
+		print_bracket(x1, buff, x2)
+		
 		r16.append((winner1,winner2))
+
+	#Do Sweet 16		
 	header = "SWEET 16"
 	header = header.rjust(len(header)/2 + 25)
 	print header
 	print_sepeartor(25)
 	r16i = 0
 	for i in range(0, len(r16), 2):
+		#Do first matchup
 		team1 = r16[i][0]
 		team2 = r16[i][1]
-		team1_dict = all_teams[team1]
-		team2_dict = all_teams[team2]
-		x1 = team1_dict['Seed']
-		x1 += '. '
-		x1 += team1
-		x1 += '---'
-		x1 = x1.rjust(25)
-		x2 = team2_dict['Seed']
-		x2 += '. '
-		x2 += team2
-		x2 += '---'
-		x2= x2.rjust(25)
-		buff = " "
-		buff = buff * 25
-		buff += '|---- '
+		x1, x2 = build_matchup(all_teams, team1, team2)
 		winner1 = sim(r16[i])
-		winner1_dict = all_teams[winner1]
-		buff += winner1_dict['Seed']
-		buff += '. '
-		buff += winner1
-		if winner1 == r16_winners[r16i]:
-			buff += " ~~CORRECT~~"
-			prediction[5] += 1
-		else:
-			buff += " ~~WRONG~~"
-		r16i += 1
-		print x1
-		print buff
-		print x2 + '\n'
+		buff = build_winner(all_teams, winner1)
+		if(check):
+			buff, prediction[5] = build_check(buff, winner1, r16_winners[r16i], prediction[5])
+			r16i += 1
+		print_bracket(x1, buff, x2) 
+
+		#Do Second matchup
 		team1 = r16[i+1][0]
 		team2 = r16[i+1][1]
-		team1_dict = all_teams[team1]
-		team2_dict = all_teams[team2]
-		x1 = team1_dict['Seed']
-		x1 += '. '
-		x1 += team1
-		x1 += '---'
-		x1 = x1.rjust(25)
-		x2 = team2_dict['Seed']
-		x2 += '. '
-		x2 += team2
-		x2 += '---'
-		x2= x2.rjust(25)
-		buff = " "
-		buff = buff * 25
-		buff += '|----'
+		x1, x2 = build_matchup(all_teams, team1, team2)
 		winner2 = sim(r16[i+1])
-		winner2_dict = all_teams[winner2]
-		buff += winner2_dict['Seed']
-		buff += '. '
-		buff += winner2
-		if winner2 == r16_winners[r16i]:
-			buff += " ~~CORRECT~~"
-			prediction[5] += 1
-		else:
-			buff += " ~~WRONG~~"
-		r16i += 1
-		print x1
-		print buff
-		print x2 + '\n'
+		buff = build_winner(all_teams, winner2)
+		if(check):
+			buff, prediction[5] = build_check(buff, winner1, r16_winners[r16i], prediction[5])
+			r16i += 1
+		print_bracket(x1, buff, x2)
+		
 		r8.append((winner1,winner2))
+		
+	#Do Elite 8
 	header = "ELITE 8"
 	header = header.rjust(len(header)/2 + 25)
 	print header
 	print_sepeartor(25)
 	r8i = 0
 	for i in range(0, len(r8), 2):
+		#Do first matchup
 		team1 = r8[i][0]
 		team2 = r8[i][1]
-		team1_dict = all_teams[team1]
-		team2_dict = all_teams[team2]
-		x1 = team1_dict['Seed']
-		x1 += '. '
-		x1 += team1
-		x1 += '---'
-		x1 = x1.rjust(25)
-		x2 = team2_dict['Seed']
-		x2 += '. '
-		x2 += team2
-		x2 += '---'
-		x2= x2.rjust(25)
-		buff = " "
-		buff = buff * 25
-		buff += '|---- '
+		x1, x2 = build_matchup(all_teams, team1, team2)
 		winner1 = sim(r8[i])
-		winner1_dict = all_teams[winner1]
-		buff += winner1_dict['Seed']
-		buff += '. '
-		buff += winner1
-		if winner1 == r8_winners[r8i]:
-			buff += " ~~CORRECT~~"
-			prediction[7] += 1
-		else:
-			buff += " ~~WRONG~~"
-		r8i += 1
-		print x1
-		print buff
-		print x2 + '\n'
+		buff = build_winner(all_teams, winner1)
+		if(check):
+			buff, prediction[7] = build_check(buff, winner1, r8_winners[r8i], prediction[7])
+			r8i += 1
+		print_bracket(x1, buff, x2) 
+
+		#Do Second matchup
 		team1 = r8[i+1][0]
 		team2 = r8[i+1][1]
-		team1_dict = all_teams[team1]
-		team2_dict = all_teams[team2]
-		x1 = team1_dict['Seed']
-		x1 += '. '
-		x1 += team1
-		x1 += '---'
-		x1 = x1.rjust(25)
-		x2 = team2_dict['Seed']
-		x2 += '. '
-		x2 += team2
-		x2 += '---'
-		x2= x2.rjust(25)
-		buff = " "
-		buff = buff * 25
-		buff += '|----'
+		x1, x2 = build_matchup(all_teams, team1, team2)
 		winner2 = sim(r8[i+1])
-		winner2_dict = all_teams[winner2]
-		buff += winner2_dict['Seed']
-		buff += '. '
-		buff += winner2
-		if winner2 == r8_winners[r8i]:
-			buff += " ~~CORRECT~~"
-			prediction[7] += 1
-		else:
-			buff += " ~~WRONG~~"
-		r8i += 1		
-		print x1
-		print buff
-		print x2 + '\n'
+		buff = build_winner(all_teams, winner2)
+		if(check):
+			buff, prediction[7] = build_check(buff, winner1, r8_winners[r8i], prediction[7])
+			r8i += 1
+		print_bracket(x1, buff, x2)
 		r4.append((winner1,winner2))
+		
+	#Do Final 4
 	header = "FINAL 4"
 	header = header.rjust(len(header)/2 + 25)
 	print header
@@ -534,102 +421,44 @@ def bracket(all_teams, keys, m):
 	for i in range(0, len(r4), 2):
 		team1 = r4[i][0]
 		team2 = r4[i][1]
-		team1_dict = all_teams[team1]
-		team2_dict = all_teams[team2]
-		x1 = team1_dict['Seed']
-		x1 += '. '
-		x1 += team1
-		x1 += '---'
-		x1 = x1.rjust(25)
-		x2 = team2_dict['Seed']
-		x2 += '. '
-		x2 += team2
-		x2 += '---'
-		x2= x2.rjust(25)
-		buff = " "
-		buff = buff * 25
-		buff += '|---- '
+		x1, x2 = build_matchup(all_teams, team1, team2)
 		winner1 = sim(r4[i])
-		winner1_dict = all_teams[winner1]
-		buff += winner1_dict['Seed']
-		buff += '. '
-		buff += winner1
-		if winner1 == r4_winners[r4i]:
-			buff += " ~~CORRECT~~"
-			prediction[9] += 1
-		else:
-			buff += " ~~WRONG~~"
-		r4i += 1
-		print x1
-		print buff
-		print x2 + '\n'
+		buff = build_winner(all_teams, winner1)
+		if(check):
+			buff, prediction[9] = build_check(buff, winner1, r4_winners[r4i], prediction[9])
+			r4i += 1
+		print_bracket(x1, buff, x2) 
+
+		#Do Second matchup
 		team1 = r4[i+1][0]
 		team2 = r4[i+1][1]
-		team1_dict = all_teams[team1]
-		team2_dict = all_teams[team2]
-		x1 = team1_dict['Seed']
-		x1 += '. '
-		x1 += team1
-		x1 += '---'
-		x1 = x1.rjust(25)
-		x2 = team2_dict['Seed']
-		x2 += '. '
-		x2 += team2
-		x2 += '---'
-		x2= x2.rjust(25)
-		buff = " "
-		buff = buff * 25
-		buff += '|----'
+		x1, x2 = build_matchup(all_teams, team1, team2)
 		winner2 = sim(r4[i+1])
-		winner2_dict = all_teams[winner2]
-		buff += winner2_dict['Seed']
-		buff += '. '
-		buff += winner2
-		if winner2 == r4_winners[r4i]:
-			buff += " ~~CORRECT~~"
-			prediction[9] += 1
-		else:
-			buff += " ~~WRONG~~"
-		r4i += 1
-		print x1
-		print buff
-		print x2 + '\n'
+		buff = build_winner(all_teams, winner2)
+		if(check):
+			buff, prediction[9] = build_check(buff, winner1, r4_winners[r4i], prediction[9])
+			r4i += 1
+		print_bracket(x1, buff, x2)
 		r2.append((winner1,winner2))
+		
+	#Do Championship
 	header = "CHAMPIONSHIP"
 	header = header.rjust(len(header)/2 + 25)
 	print header
 	print_sepeartor(25)
-	for i in range(0, len(r2), 2):
-		team1 = r2[i][0]
-		team2 = r2[i][1]
-		team1_dict = all_teams[team1]
-		team2_dict = all_teams[team2]
-		x1 = team1_dict['Seed']
-		x1 += '. '
-		x1 += team1
-		x1 += '---'
-		x1 = x1.rjust(25)
-		x2 = team2_dict['Seed']
-		x2 += '. '
-		x2 += team2
-		x2 += '---'
-		x2= x2.rjust(25)
-		buff = " "
-		buff = buff * 25
-		buff += '|---- '
-		winner1 = sim(r2[i])
-		winner1_dict = all_teams[winner1]
-		buff += winner1_dict['Seed']
-		buff += '. '
-		buff += winner1
-		if winner1 == r2_winner:
-			buff += " ~~CORRECT~~"
-			prediction[11] += 1
-		else:
-			buff += " ~~WRONG~~"
-		print x1
-		print buff
-		print x2 + '\n'
+
+	team1 = r2[0][0]
+	team2 = r2[0][1]
+	x1, x2 = build_matchup(all_teams, team1, team2)
+	winner1 = sim(r2[0])
+	buff = build_winner(all_teams, winner1)
+	
+	if(check):
+		buff, prediction[11] = build_check(buff, winner1, r2_winner, prediction[11])
+		r4i += 1
+	print_bracket(x1, buff, x2)
+		
+	if check:
 		print "--Final Prediction State --"
 		for i in range(0,8,2):
 			print "The predicted",
@@ -657,6 +486,191 @@ def bracket(all_teams, keys, m):
 	else:
 		return winner1
 
+def sim_mutliple(matchup):
+		team1 = matchup[0]
+		team2 = matchup[1]
+		team1score = 0
+		team2score = 0
+		for i in range(0, 2):
+			winner1 = sim(matchup)
+			if team1 == winner1:
+				team1score += 1
+			else:
+				team2score += 1
+		if team1score > team2score:
+			return(team1)
+		elif team1score < team2score:
+			return(team2)
+		else:
+			return(sim(matchup))
+		
+def bracket_maker(all_teams, keys):
+	first4 = []
+	first4_w = []
+	r64 = []
+	r32 = []
+	r16 = []
+	r8 = []
+	r4 =[]
+	r2 = []
+
+	first4_winners = ["Texas Southern", "Radford", "Belmont", "Arizona State"]
+
+	prediction = ["Round of 32",0,"Sweet 16",0,"Elite Eight",0,"Final Four",0,"Championship Game",0,"Champion",0]
+	nums = [32,0,16,0,8,0,4,0,2,0,1,0]
+
+	with open('pairings.txt', 'r') as file:
+		all_teams_ordered = file.readlines()
+		all_teams_ordered = [x.rstrip() for x in all_teams_ordered]
+	for i in range (0,8,2):
+		team1 = all_teams_ordered[i]
+		team2 = all_teams_ordered[i + 1]
+		first4.append((team1, team2))
+	for i in range (0, 4):
+		first4_w.append(sim(first4[i]))
+
+	#Do Play-in
+	playInNum = 0
+	for x in range(8, 72, 2):
+			team1 = all_teams_ordered[x]
+			team2 = all_teams_ordered[x + 1]
+			if team2 == "Play-in":
+				team2 = first4_w[playInNum]
+				playInNum += 1
+			matchup_t = (team1, team2)
+			r64.append(matchup_t)
+			
+	#Do Round of 64		
+	header = "ROUND OF 64"
+	header = header.rjust(len(header)/2 + 25)
+	print header
+	print_sepeartor(25)
+	for i in range(0, len(r64), 2):
+		#Do first matchup
+		team1 = r64[i][0]
+		team2 = r64[i][1]
+		x1, x2 = build_matchup(all_teams, team1, team2)
+		winner1 = sim_mutliple(r64[i])
+		buff = build_winner(all_teams, winner1)
+		print_bracket(x1, buff, x2) 
+
+		#Do Second matchup
+		team1 = r64[i+1][0]
+		team2 = r64[i+1][1]
+		x1, x2 = build_matchup(all_teams, team1, team2)
+		winner2 = sim_mutliple(r64[i+1])
+		buff = build_winner(all_teams, winner2)
+		print_bracket(x1, buff, x2)
+		
+		r32.append((winner1,winner2))
+	
+	#Do Round of 32
+	header = "ROUND OF 32"
+	header = header.rjust(len(header)/2 + 25)
+	print header
+	print_sepeartor(25)
+	for i in range(0, len(r32), 2):
+		#Do first matchup
+		team1 = r32[i][0]
+		team2 = r32[i][1]
+		x1, x2 = build_matchup(all_teams, team1, team2)
+		winner1 = sim_mutliple(r32[i])
+		buff = build_winner(all_teams, winner1)
+		print_bracket(x1, buff, x2) 
+
+		#Do Second matchup
+		team1 = r32[i+1][0]
+		team2 = r32[i+1][1]
+		x1, x2 = build_matchup(all_teams, team1, team2)
+		winner2 = sim_mutliple(r32[i+1])
+		buff = build_winner(all_teams, winner2)
+		print_bracket(x1, buff, x2)
+		
+		r16.append((winner1,winner2))
+
+	#Do Sweet 16		
+	header = "SWEET 16"
+	header = header.rjust(len(header)/2 + 25)
+	print header
+	print_sepeartor(25)
+	for i in range(0, len(r16), 2):
+		#Do first matchup
+		team1 = r16[i][0]
+		team2 = r16[i][1]
+		x1, x2 = build_matchup(all_teams, team1, team2)
+		winner1 = sim_mutliple(r16[i])
+		buff = build_winner(all_teams, winner1)
+		print_bracket(x1, buff, x2) 
+
+		#Do Second matchup
+		team1 = r16[i+1][0]
+		team2 = r16[i+1][1]
+		x1, x2 = build_matchup(all_teams, team1, team2)
+		winner2 = sim_mutliple(r16[i+1])
+		buff = build_winner(all_teams, winner2)
+		print_bracket(x1, buff, x2)
+		
+		r8.append((winner1,winner2))
+		
+	#Do Elite 8
+	header = "ELITE 8"
+	header = header.rjust(len(header)/2 + 25)
+	print header
+	print_sepeartor(25)
+	for i in range(0, len(r8), 2):
+		#Do first matchup
+		team1 = r8[i][0]
+		team2 = r8[i][1]
+		x1, x2 = build_matchup(all_teams, team1, team2)
+		winner1 = sim_mutliple(r8[i])
+		buff = build_winner(all_teams, winner1)
+		print_bracket(x1, buff, x2) 
+
+		#Do Second matchup
+		team1 = r8[i+1][0]
+		team2 = r8[i+1][1]
+		x1, x2 = build_matchup(all_teams, team1, team2)
+		winner2 = sim_mutliple(r8[i+1])
+		buff = build_winner(all_teams, winner2)
+		print_bracket(x1, buff, x2)
+		r4.append((winner1,winner2))
+		
+	#Do Final 4
+	header = "FINAL 4"
+	header = header.rjust(len(header)/2 + 25)
+	print header
+	print_sepeartor(25)
+	for i in range(0, len(r4), 2):
+		team1 = r4[i][0]
+		team2 = r4[i][1]
+		x1, x2 = build_matchup(all_teams, team1, team2)
+		winner1 = sim_mutliple(r4[i])
+		buff = build_winner(all_teams, winner1)
+		print_bracket(x1, buff, x2) 
+
+		#Do Second matchup
+		team1 = r4[i+1][0]
+		team2 = r4[i+1][1]
+		x1, x2 = build_matchup(all_teams, team1, team2)
+		winner2 = sim_mutliple(r4[i+1])
+		buff = build_winner(all_teams, winner2)
+		print_bracket(x1, buff, x2)
+		r2.append((winner1,winner2))
+		
+	#Do Championship
+	header = "CHAMPIONSHIP"
+	header = header.rjust(len(header)/2 + 25)
+	print header
+	print_sepeartor(25)
+
+	team1 = r2[0][0]
+	team2 = r2[0][1]
+	x1, x2 = build_matchup(all_teams, team1, team2)
+	winner1 = sim_mutliple(r2[0])
+	buff = build_winner(all_teams, winner1)
+	print_bracket(x1, buff, x2)
+		
+
 def mass(all_teams, keys):
 	times = raw_input("Enter number of times to run: ")
 	winners = {}
@@ -679,9 +693,11 @@ def input():
 	elif mode == "sim":
 		simulate(all_teams, keys)
 	elif mode == "bracket":
-		bracket(all_teams, keys, 1)
+		bracket(all_teams, keys, 1, 0)
 	elif mode == "mass":
 		mass(all_teams, keys)
+	elif mode == "bracket_maker":
+		bracket_maker(all_teams, keys)
 	else:
 		print "Invalid mode, Quitting..."
 # MAIN 
