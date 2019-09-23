@@ -1,7 +1,6 @@
 NCAA Tournament Analysis by Andy Jiang
 
-An interactive python program that allows the user to compare all 68 teams in the
-2018 NCAA March Madness basketball tournament.
+An interactive python program that allows the user to compare all 68 teams in the NCAA March Madness basketball tournament. Updated for 2018-2019.
 
 To use, keep both txt files and the csv file in the same directory as bracket.py
 And envoke in python with 
