@@ -4,13 +4,13 @@ import random
 def compare(all_teams, keys):
 	team1 = ""
 	while team1 != 'quit':
-		team1 = raw_input('Input your first team, "quit" to quit, or "help" for help: ')
+		team1 = input('Input your first team, "quit" to quit, or "help" for help: ')
 		if team1 == 'help':
 			compare_help()
-			team1 = raw_input('Input your first team, "quit" to quit, or "help" for help: ')
+			team1 = input('Input your first team, "quit" to quit, or "help" for help: ')
 		if team1 == "quit":
 			return
-		team2 = raw_input('Input your second team: ')
+		team2 = input('Input your second team: ')
 		try:
 			team1_dict = all_teams[team1]
 			team2_dict = all_teams[team2]
@@ -23,7 +23,7 @@ def compare(all_teams, keys):
 			str2 += team2
 			str1 = str1.rjust(50)
 			str2 = str2.ljust(50)
-			print str1, str2
+			print(str1, str2)
 			for i in range(0, len(keys)):
 				key = keys[i]
 				t1 = key
@@ -35,7 +35,7 @@ def compare(all_teams, keys):
 				t2 += key
 				t1 = t1.rjust(50)
 				t2 = t2.ljust(50)
-				print t1, t2
+				print(t1, t2)
 
 			t1_o = float(team1_dict["Adj-O"])
 			t1_d = float(team1_dict["Adj-D"])
@@ -67,7 +67,7 @@ def compare(all_teams, keys):
 			p2 += prob
 			p1 = p1.rjust(50)
 			p2 = p2.ljust(50)
-			print p1, p2
+			print(p1, p2)
 
 			print_sepeartor(50)
 
@@ -80,39 +80,39 @@ def compare(all_teams, keys):
 			t2 += str(int(round(t2_ppp)))
 			t1 = t1.rjust(50)
 			t2 = t2.ljust(50)
-			print t1 + t2
+			print(t1 + t2)
 
 
 		except:
-			print '\n'+"Invalid team name(s), please try again"
+			print('\n'+"Invalid team name(s), please try again")
 	return
 
 def compare_help():
-	input_in = raw_input('Input "teams" for all team spellings, or "credits" for credits: ')
+	input_in = input('Input "teams" for all team spellings, or "credits" for credits: ')
 	if input_in == 'teams':
-		letter = raw_input("Input the first leter of the team: ")
+		letter = input("Input the first leter of the team: ")
 		for key in all_teams:
 			if key[0] == letter:
-				print key
+				print(key)
 
 def print_sepeartor(num):
 	p1 = "-----"
 	p2 = p1
 	p1 = p1.rjust(num)
 	p2 = p2.ljust(num)
-	print p1+p2
+	print(p1+p2)
 
 
 def simulate(all_teams, keys):
 	team1 = ""
 	while team1 != 'quit':
-		team1 = raw_input('Input your first team, "quit" to quit, or "help" for help: ')
+		team1 = input('Input your first team, "quit" to quit, or "help" for help: ')
 		if team1 == 'help':
 			compare_help()
-			team1 = raw_input('Input your first team, "quit" to quit, or "help" for help: ')
+			team1 = input('Input your first team, "quit" to quit, or "help" for help: ')
 		if team1 == "quit":
 			return
-		team2 = raw_input('Input your second team: ')
+		team2 = input('Input your second team: ')
 		try:
 			team1_dict = all_teams[team1]
 			team2_dict = all_teams[team2]
@@ -149,7 +149,7 @@ def simulate(all_teams, keys):
 			x1 += x2
 			le = (len(x1) /2) + 25
 			x1 = x1.rjust(le)
-			print x1
+			print(x1)
 			win = ""
 			if num <= prob_t1:
 				win = team1 
@@ -160,9 +160,9 @@ def simulate(all_teams, keys):
 			leng = (len(win) / 2) + 25
 			win = win.rjust(leng)
 			print_sepeartor(25)
-			print win
+			print(win)
 		except:
-			print '\n'+"Invalid team name(s), please try again"
+			print('\n'+"Invalid team name(s), please try again")
 
 def sim(matchup):
 	team1 = matchup[0]
@@ -228,9 +228,9 @@ def build_check(buff, winner1, actual_winner, index, pred):
 	return buff, pred
 
 def print_bracket(x1, buff, x2):
-	print x1
-	print buff
-	print x2 + '\n'	
+	print(x1)
+	print(buff)
+	print(x2 + '\n')
 	
 	
 def bracket(all_teams, keys, m, check):
@@ -243,7 +243,6 @@ def bracket(all_teams, keys, m, check):
 	r4 =[]
 	r2 = []
 
-	first4_winners = ["Texas Southern", "Radford", "St. Bonaventure", "Syracuse"]
 	r64_winners = []
 	r32_winners = []
 	r16_winners = []
@@ -268,7 +267,8 @@ def bracket(all_teams, keys, m, check):
 			r4_winners.append(all_winners_ordered[i])
 		r2_winner = all_winners_ordered[62]	
 
-	with open('pairings.txt', 'r') as file:
+	pairingsFile = 'data/' + year + '/pairings.txt'
+	with open(pairingsFile, 'r') as file:
 		all_teams_ordered = file.readlines()
 		all_teams_ordered = [x.rstrip() for x in all_teams_ordered]
 	for i in range (0,8,2):
@@ -291,8 +291,8 @@ def bracket(all_teams, keys, m, check):
 			
 	#Do Round of 64		
 	header = "ROUND OF 64"
-	header = header.rjust(len(header)/2 + 25)
-	print header
+	header = header.rjust(len(header)//2 + 25)
+	print(header)
 	print_sepeartor(25)
 	r64i = 0;
 	for i in range(0, len(r64), 2):
@@ -322,8 +322,8 @@ def bracket(all_teams, keys, m, check):
 	
 	#Do Round of 32
 	header = "ROUND OF 32"
-	header = header.rjust(len(header)/2 + 25)
-	print header
+	header = header.rjust(len(header)//2 + 25)
+	print(header)
 	print_sepeartor(25)
 	r32i = 0
 	for i in range(0, len(r32), 2):
@@ -353,8 +353,8 @@ def bracket(all_teams, keys, m, check):
 
 	#Do Sweet 16		
 	header = "SWEET 16"
-	header = header.rjust(len(header)/2 + 25)
-	print header
+	header = header.rjust(len(header)//2 + 25)
+	print(header)
 	print_sepeartor(25)
 	r16i = 0
 	for i in range(0, len(r16), 2):
@@ -384,8 +384,8 @@ def bracket(all_teams, keys, m, check):
 		
 	#Do Elite 8
 	header = "ELITE 8"
-	header = header.rjust(len(header)/2 + 25)
-	print header
+	header = header.rjust(len(header)//2 + 25)
+	print(header)
 	print_sepeartor(25)
 	r8i = 0
 	for i in range(0, len(r8), 2):
@@ -414,8 +414,8 @@ def bracket(all_teams, keys, m, check):
 		
 	#Do Final 4
 	header = "FINAL 4"
-	header = header.rjust(len(header)/2 + 25)
-	print header
+	header = header.rjust(len(header)//2 + 25)
+	print(header)
 	print_sepeartor(25)
 	r4i = 0
 	for i in range(0, len(r4), 2):
@@ -443,8 +443,8 @@ def bracket(all_teams, keys, m, check):
 		
 	#Do Championship
 	header = "CHAMPIONSHIP"
-	header = header.rjust(len(header)/2 + 25)
-	print header
+	header = header.rjust(len(header)//2 + 25)
+	print(header)
 	print_sepeartor(25)
 
 	team1 = r2[0][0]
@@ -459,30 +459,30 @@ def bracket(all_teams, keys, m, check):
 	print_bracket(x1, buff, x2)
 		
 	if check:
-		print "--Final Prediction State --"
+		print("--Final Prediction State --")
 		for i in range(0,8,2):
-			print "The predicted",
-			print prediction[i],
-			print "field was", 
+			print("The predicted", end=" ")
+			print(prediction[i], end=" ")
+			print("field was", end=" ")
 			strin = str(prediction[i+1]) + "/" + str(nums[i])
 			doubl = round((float(prediction[i+1])/float(nums[i])) * 100, 2)
 			strin += " correct for "
 			strin += str(doubl)
 			strin += "%"
-			print strin
+			print(strin)
 		for i in range(8,12,2):
-			print "The predicted",
-			print prediction[i],
-			print "was", 
+			print("The predicted", end=" ")
+			print(prediction[i], end=" ")
+			print("was", end=" ") 
 			strin = str(prediction[i+1]) + "/" + str(nums[i])
 			doubl = round((float(prediction[i+1])/float(nums[i])) * 100, 2)
 			strin += " correct for "
 			strin += str(doubl)
 			strin += "%"
-			print strin
+			print(strin)
 
-	if m is 1:
-		input()
+	if m == 1:
+		start_input()
 	else:
 		return winner1
 
@@ -514,12 +514,12 @@ def bracket_maker(all_teams, keys):
 	r4 =[]
 	r2 = []
 
-	first4_winners = ["Texas Southern", "Radford", "Belmont", "Arizona State"]
 
 	prediction = ["Round of 32",0,"Sweet 16",0,"Elite Eight",0,"Final Four",0,"Championship Game",0,"Champion",0]
 	nums = [32,0,16,0,8,0,4,0,2,0,1,0]
 
-	with open('pairings.txt', 'r') as file:
+	pairingsFile = 'data/' + year + '/pairings.txt'
+	with open(pairingsFile, 'r') as file:
 		all_teams_ordered = file.readlines()
 		all_teams_ordered = [x.rstrip() for x in all_teams_ordered]
 	for i in range (0,8,2):
@@ -542,8 +542,8 @@ def bracket_maker(all_teams, keys):
 			
 	#Do Round of 64		
 	header = "ROUND OF 64"
-	header = header.rjust(len(header)/2 + 25)
-	print header
+	header = header.rjust(len(header)//2 + 25)
+	print(header)
 	print_sepeartor(25)
 	for i in range(0, len(r64), 2):
 		#Do first matchup
@@ -566,8 +566,8 @@ def bracket_maker(all_teams, keys):
 	
 	#Do Round of 32
 	header = "ROUND OF 32"
-	header = header.rjust(len(header)/2 + 25)
-	print header
+	header = header.rjust(len(header)//2 + 25)
+	print(header)
 	print_sepeartor(25)
 	for i in range(0, len(r32), 2):
 		#Do first matchup
@@ -590,8 +590,8 @@ def bracket_maker(all_teams, keys):
 
 	#Do Sweet 16		
 	header = "SWEET 16"
-	header = header.rjust(len(header)/2 + 25)
-	print header
+	header = header.rjust(len(header)//2 + 25)
+	print(header)
 	print_sepeartor(25)
 	for i in range(0, len(r16), 2):
 		#Do first matchup
@@ -614,8 +614,8 @@ def bracket_maker(all_teams, keys):
 		
 	#Do Elite 8
 	header = "ELITE 8"
-	header = header.rjust(len(header)/2 + 25)
-	print header
+	header = header.rjust(len(header)//2 + 25)
+	print(header)
 	print_sepeartor(25)
 	for i in range(0, len(r8), 2):
 		#Do first matchup
@@ -637,8 +637,8 @@ def bracket_maker(all_teams, keys):
 		
 	#Do Final 4
 	header = "FINAL 4"
-	header = header.rjust(len(header)/2 + 25)
-	print header
+	header = header.rjust(len(header)//2 + 25)
+	print(header)
 	print_sepeartor(25)
 	for i in range(0, len(r4), 2):
 		team1 = r4[i][0]
@@ -659,8 +659,8 @@ def bracket_maker(all_teams, keys):
 		
 	#Do Championship
 	header = "CHAMPIONSHIP"
-	header = header.rjust(len(header)/2 + 25)
-	print header
+	header = header.rjust(len(header)//2 + 25)
+	print(header)
 	print_sepeartor(25)
 
 	team1 = r2[0][0]
@@ -672,24 +672,29 @@ def bracket_maker(all_teams, keys):
 		
 
 def mass(all_teams, keys):
-	times = raw_input("Enter number of times to run: ")
+	times = input("Enter number of times to run: ")
 	winners = {}
 	for i in range(0, int(times)):
-		win = bracket(all_teams, keys, 0)
+		win = bracket(all_teams, keys, 0, 0)
 		if win in winners:
 			winners[win] += 1
 		else:
 			winners[win] = 1
-	for key in winners:
-		print key + ": ", winners[key]
+	results = sorted(winners.items(),  key=lambda item: item[1], reverse=True)
+	for k, v in results:
+		print(k + ": " + str(v) + " (" + percentage(v, times) + ")")
 
-def input():
+def percentage(part, whole):
+  percent = 100 * float(part)/float(whole)
+  return str(percent) + "%"
+
+def start_input():
 	ask = "Please enter a mode: "
-	mode = raw_input(ask)
+	mode = input(ask)
 
 	if mode == "comp":
 		compare(all_teams, keys)
-		print "Quitting...."
+		print("Quitting....")
 	elif mode == "sim":
 		simulate(all_teams, keys)
 	elif mode == "bracket":
@@ -699,21 +704,16 @@ def input():
 	elif mode == "bracket_maker":
 		bracket_maker(all_teams, keys)
 	else:
-		print "Invalid mode, Quitting..."
+		print("Invalid mode, Quitting...")
 # MAIN 
 all_teams = {}
-
+year = "2021"
 keys = ['Kenpom Rank', 'Kenpom Seed','Record','Adj-O','Adj-O Rank','Adj-D','Adj-D Rank','Adj-T','Adj-T Rank','Luck','Luck Rank','SOS','SOS Rank','OppO','OppO Rank','OppD','OppD Rank','Non-Con SOS','Non-Con SOS Rank']
-with open('team-stats.csv', 'r') as csvfile:
+statsFile = 'data/' + year + '/team-stats.csv'
+with open(statsFile, 'r') as csvfile:
 	reader = csv.DictReader(csvfile, dialect='excel')
 	for row in reader:
 		all_teams[row["Team"]] = row
 
-
-print "Welcome to Interactive Stats for 2018 March Madness." 
-input()
-
-
-
-
-
+print("Welcome to Interactive Stats for March Madness " + year)
+start_input()
